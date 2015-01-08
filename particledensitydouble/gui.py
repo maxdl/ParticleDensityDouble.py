@@ -276,7 +276,7 @@ class MainFrame ( wx.Frame ):
 		self.GenerateOutputLabel.Wrap( -1 )
 		OutputOptionsSizer.Add( self.GenerateOutputLabel, 0, wx.ALL, 5 )
 		
-		OutputCheckListBoxChoices = [u"Profile summary", u"Point summary", u"Random summary", u"Session summary", u"Individual profiles"]
+		OutputCheckListBoxChoices = [u"Profile summary", u"Point summary", u"Random summary", u"Session summary"]
 		self.OutputCheckListBox = wx.CheckListBox( self.OutputOptionsTab, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, OutputCheckListBoxChoices, 0 )
 		OutputOptionsSizer.Add( self.OutputCheckListBox, 0, wx.ALL, 5 )
 		

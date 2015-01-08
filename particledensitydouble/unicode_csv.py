@@ -7,7 +7,8 @@ import csv
 import codecs
 import cStringIO
 
-class writer(object):
+
+class Writer(object):
     """
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
@@ -43,14 +44,9 @@ class writer(object):
     def writerows(self, rows):
         for row in rows:
             self.writerow(row)
-            
+
     def close(self):
         """ Not really needed; only present to make the interface similar to the
             xls.py module (xls.writer objects need to be explicitly closed)
         """
         pass
-
-
-
-
-
