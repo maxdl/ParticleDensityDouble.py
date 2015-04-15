@@ -46,8 +46,15 @@ class Frame(gui.MainFrame):
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(appid)
  
     def OnAddFile(self, event):
-        dlg = wx.FileDialog(self, "Choose a file", ".", "", "*%s"
-                            % self.opt.input_filename_ext,
+        if isinstance(self.opt.input_filename_ext, tuple):
+            extstr = ""
+            for e in self.opt.input_filename_ext:
+                extstr += "*{}; ".format(e)
+            extstr = extstr[0:-2]
+        else:
+            extstr = "*{}".format(self.opt.input_filename_ext)
+        filestr = "ParticleDensityDouble files ({0})|{0}".format(extstr)
+        dlg = wx.FileDialog(self, "Choose a file", ".", "", filestr,
                             wx.MULTIPLE | wx.FD_CHANGE_DIR)
         try:
             if dlg.ShowModal() == wx.ID_OK:
@@ -106,7 +113,17 @@ class Frame(gui.MainFrame):
         self.MonteCarloRunsLabel.Enable(enable)
         self.SimulationWindowChoice.Enable(enable)
         self.SimulationWindowLabel.Enable(enable)
-        self.StrictLocCheckBox.Enable(enable)
+        if (enable and
+           self.SimulationWindowChoice.GetStringSelection() == 'Profile'):
+            self.StrictLocCheckBox.Enable(True)
+        else:
+            self.StrictLocCheckBox.Enable(False)
+
+    def OnSimulationWindowChoice(self, event):
+        if self.SimulationWindowChoice.GetStringSelection() == 'Profile':
+            self.StrictLocCheckBox.Enable(True)
+        else:
+            self.StrictLocCheckBox.Enable(False)
 
     def OnOtherSuffixCheckBox(self, event):
         self.OtherSuffixTextCtrl.Enable(self.OtherSuffixCheckBox.GetValue())
@@ -279,7 +296,7 @@ class Frame(gui.MainFrame):
         set_option('output_filename_date_suffix')
         set_option('spatial_resolution')
         set_option('shell_width')
-        set_option('determine_clusters')
+        set_option('_determine_clusters')
         set_option('within_cluster_dist')
         set_option('monte_carlo_particle_type')
         set_option('monte_carlo_runs')
@@ -433,7 +450,10 @@ class Frame(gui.MainFrame):
         self.MonteCarloRunsLabel.Enable(enable)
         self.SimulationWindowChoice.Enable(enable)
         self.SimulationWindowLabel.Enable(enable)
-        self.StrictLocCheckBox.Enable(enable)
+        if self.SimulationWindowChoice.GetStringSelection() == 'Profile':
+            self.StrictLocCheckBox.Enable(True)
+        else:
+            self.StrictLocCheckBox.Enable(False)
         self.OutputCheckListBox.SetCheckedStrings(
             [key.capitalize() for key in self.opt.outputs
                 if self.opt.outputs[key] is True])
@@ -529,7 +549,7 @@ class Frame(gui.MainFrame):
         fn = ""
         for fn in fli:
             if (os.path.isfile(fn) and
-                    os.path.splitext(fn)[1] == self.opt.input_filename_ext):
+                    os.path.splitext(fn)[1] in self.opt.input_filename_ext):
                 self.InputFileListCtrl.InsertStringItem(c + n,
                                                         os.path.basename(fn))
                 self.InputFileListCtrl.SetStringItem(c + n, 1,
@@ -547,11 +567,10 @@ class Frame(gui.MainFrame):
             self.InputFileListCtrl.SetColumnWidth(0, -1)
             self.InputFileListCtrl.SetColumnWidth(1, -1)
         elif os.path.isdir(fn):
-            self.show_warning("No files with '%s' extension found in folder(s)."
-                              % self.opt.input_filename_ext)
+            self.show_warning("No ParticleDensityDouble files found in "
+                              "folder(s).")
         else:
-            self.show_warning("Input files must have a '%s' extension."
-                              % self.opt.input_filename_ext)
+            self.show_warning("Not a ParticleDensityDouble file.")
 
     @staticmethod
     def set_input_file_list_ctrl_columns(parent):

@@ -1,5 +1,18 @@
+2015-04-15:
+- Bug fixes.
+2015-01-14:
+- Fixed Monte Carlo simulations that had been broken in a previous version.
+- Monte Carlo simulation windows should now work as expected.
+- Removed the strict localization option when using simulation window "profile +
+  shell".
+- Most functions in class ProfileData are now semiprivate.
+- A rather comprehensive code cleanup.
+- Various other small changes and bug fixes.
+2014-11-11:
+- Code cleanup.
+- Various other small changes and bug fixes.
+- License changed to the MIT license.
 2014-05-14:
-- 1.0pre1
 - Modified the user interface of the Python component; it should now work
   properly also on platforms other than Windows.
 - Processing in the Python component is now cancellable through a progress

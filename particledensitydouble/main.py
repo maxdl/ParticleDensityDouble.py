@@ -36,7 +36,7 @@ def save_output(profileli, opt):
         with file_io.FileWriter("session.summary", opt) as f:
             f.writerow(["%s version:" % version.title,
                        "%s (Last modified %s %s, %s)"
-                       % ((version.version,) + version.date)])
+                        % ((version.version,) + version.date)])
             f.writerow(["Number of evaluated profiles:", len(eval_proli)])
             if err_fli:
                 f.writerow(["Number of non-evaluated profiles:", len(err_fli)])
@@ -101,16 +101,14 @@ def save_output(profileli, opt):
             f.writerows([[m(pro.path.perimeter(), pro.pixelwidth),
                           m2(pro.path.area(), pro.pixelwidth),
                           len(pro.spli),
-                          len([p for p in pro.spli
-                               if p.is_within_profile(pro.path)]),
+                          len([p for p in pro.spli if p.is_within_profile]),
                           1e6 * (len([p for p in pro.spli
-                                      if p.is_within_profile(pro.path)])
+                                      if p.is_within_profile])
                                  / m2(pro.path.area(), pro.pixelwidth)),
                           len(pro.lpli),
-                          len([p for p in pro.lpli
-                               if p.is_within_profile(pro.path)]),
+                          len([p for p in pro.lpli if p.is_within_profile]),
                           1e6 * (len([p for p in pro.lpli
-                                      if p.is_within_profile(pro.path)])
+                                      if p.is_within_profile])
                                  / m2(pro.path.area(), pro.pixelwidth)),
                           pro.ID,
                           pro.profile_type,
@@ -139,11 +137,11 @@ def save_output(profileli, opt):
                         "Input file",
                         "Comment"])
             f.writerows([[n + 1,
-                          m(p.distToPath, pro.pixelwidth),
-                          sc.yes_or_no(p.is_within_profile(pro.path)),
-                          sc.yes_or_no(p.isAssociatedWithPath),
-                          sc.yes_or_no(p.is_within_profile(pro.path) or
-                                       p.isAssociatedWithPath),
+                          m(p.dist_to_path, pro.pixelwidth),
+                          sc.yes_or_no(p.is_within_profile),
+                          sc.yes_or_no(p.is_associated_with_path),
+                          sc.yes_or_no(p.is_within_profile or
+                                       p.is_associated_with_path),
                           pro.ID,
                           pro.profile_type,
                           core.os.path.basename(pro.inputfn),
@@ -170,8 +168,8 @@ def save_output(profileli, opt):
                         "Comment"])
             f.writerows([[n + 1,
                           len(c),
-                          m(c.distToPath, pro.pixelwidth),
-                          m(na(c.distToNearestCluster), pro.pixelwidth),
+                          m(c.dist_to_path, pro.pixelwidth),
+                          m(na(c.dist_to_nearest_cluster), pro.pixelwidth),
                           pro.ID,
                           pro.profile_type,
                           core.os.path.basename(pro.inputfn),
@@ -206,8 +204,6 @@ def save_output(profileli, opt):
         prefixli = []
         for key, val in ip_rels.items():
             prefix = key[0] + key[key.index("- ") + 2] + "_"
-            if prefix[0] == prefix[1]:
-                prefix = prefix.replace(prefix[0], "", 1)
             prefixli.append(prefix)
         if opt.interpoint_shortest_dist and opt.interpoint_lateral_dist:
             headerli.extend(headerli)
@@ -220,7 +216,7 @@ def save_output(profileli, opt):
         if opt.interpoint_lateral_dist:
             topheaderli.append("Lateral distances along profile border")
         table.extend([topheaderli, headerli])
-        cols = [[] for c in prefixli]
+        cols = [[] for _ in prefixli]
         for pro in eval_proli:
             for n, li in enumerate([pro.__dict__[prefix + "distli"]
                                     for prefix in prefixli]):
@@ -240,9 +236,9 @@ def save_output(profileli, opt):
                 ptype not in opt.monte_carlo_particle_type):
             return
         mcli = ptype[0] + "_mcli"
-        table = ["Run %d" % (n + 1) for n in range(0, opt.monte_carlo_runs)]
+        table = [["Run %d" % (n + 1) for n in range(0, opt.monte_carlo_runs)]]
         for pro in eval_proli:
-            table.extend(map(m_li, *[[p.distToPath for p in li["pli"]]
+            table.extend(map(m_li, *[[p.dist_to_path for p in li["pli"]]
                                      for li in pro.__dict__[mcli]]))
         with file_io.FileWriter("simulated.{}.border.distance.summary".format(
                 ptype), opt) as f:
@@ -267,7 +263,7 @@ def save_output(profileli, opt):
         else:
             short_dist_type = ""
         mcli = ptype[0] + "_mcli"
-        table = ["Run %d" % (n + 1) for n in range(0, opt.monte_carlo_runs)]
+        table = [["Run %d" % (n + 1) for n in range(0, opt.monte_carlo_runs)]]
         for pro in eval_proli:
             table.extend(map(m_li,
                              *[p for li in pro.__dict__[mcli]
@@ -299,7 +295,8 @@ def save_output(profileli, opt):
         mcli = sim_ptype[0] + "_mcli"
         if opt.interpoint_relations["simulated %s - %s"
                                     % (sim_ptype, real_ptype)]:
-            table = ["Run %d" % (n + 1) for n in range(0, opt.monte_carlo_runs)]
+            table = [["Run %d" % (n + 1)
+                      for n in range(0, opt.monte_carlo_runs)]]
             for pro in eval_proli:
                 table.extend(map(m_li,
                                  *[p for li in pro.__dict__[mcli] 
@@ -312,7 +309,8 @@ def save_output(profileli, opt):
                 f.writerows(table)
         if opt.interpoint_relations["%s - simulated %s" % (real_ptype, 
                                                            sim_ptype)]:
-            table = ["Run %d" % (n + 1) for n in range(0, opt.monte_carlo_runs)]
+            table = [["Run %d" % (n + 1)
+                      for n in range(0, opt.monte_carlo_runs)]]
             for pro in eval_proli:
                 table.extend(map(m_li,
                                  *[p for li in pro.__dict__[mcli]
@@ -331,24 +329,25 @@ def save_output(profileli, opt):
                     ptype not in opt.monte_carlo_particle_type)):
             return
         mcli = ptype[0] + "_mcli"
-        table = ["N particles in cluster", "Run",
-                 "Distance to profile border from centroid",
-                 "Distance to nearest cluster",
-                 "Profile ID", "Input file", "Comment"]
+        table = [["N particles in cluster", "Run",
+                  "Distance to profile border from centroid",
+                  "Distance to nearest cluster",
+                  "Profile ID", "Input file", "Comment"]]
         for pro in eval_proli:
             for n in range(0, opt.monte_carlo_runs):
                 for c in pro.__dict__[mcli][n]["clusterli"]:
-                    table.extend([len(c), n + 1,
-                                  m(c.distToPath, pro.pixelwidth),
-                                  m(na(c.distToNearestCluster), pro.pixelwidth),
+                    table.append([len(c), n + 1,
+                                  m(c.dist_to_path, pro.pixelwidth),
+                                  m(na(c.dist_to_nearest_cluster),
+                                    pro.pixelwidth),
                                   pro.ID,
                                   core.os.path.basename(pro.inputfn),
                                   pro.comment])
-        with file_io.FileWriter("simulated.%s.cluster.summary" 
+        with file_io.FileWriter("simulated.%s.cluster.summary"
                                 % ptype, opt) as f:
             f.writerows(table)
 
-    sys.stdout.write("\nSaving summaries...\n")
+    sys.stdout.write("\nSaving summaries to %s:\n" % opt.output_dir)
     opt.save_result = {'any_saved': False, 'any_err': False}
     eval_proli = [profile for profile in profileli if not profile.errflag]
     clean_fli = [profile.inputfn for profile in profileli
@@ -429,8 +428,9 @@ def show_options(opt):
                          % opt.monte_carlo_runs)
         sys.stdout.write("Monte Carlo simulation window: %s\n"
                          % opt.monte_carlo_simulation_window)
-        sys.stdout.write("Strict localization in simulation window: %s\n"
-                         % sc.yes_or_no(opt.monte_carlo_strict_location))
+        if opt.monte_carlo_simulation_window == "profile":
+            sys.stdout.write("Strict localization in simulation window: %s\n"
+                             % sc.yes_or_no(opt.monte_carlo_strict_location))
     sys.stdout.write("Clusters determined: %s\n"
                      % sc.yes_or_no(opt.determine_clusters))
     if opt.determine_clusters:

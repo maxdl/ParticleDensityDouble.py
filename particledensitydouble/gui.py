@@ -431,6 +431,7 @@ class MainFrame ( wx.Frame ):
 		self.ViewButton.Bind( wx.EVT_BUTTON, self.OnViewFile )
 		self.InterpointCheckBox.Bind( wx.EVT_CHECKBOX, self.OnInterpointCheckbox )
 		self.MonteCarloPTypeChoice.Bind( wx.EVT_CHOICE, self.OnMonteCarloPTypeChoice )
+		self.SimulationWindowChoice.Bind( wx.EVT_CHOICE, self.OnSimulationWindowChoice )
 		self.ClusterCheckBox.Bind( wx.EVT_CHECKBOX, self.OnClusterCheckBox )
 		self.OtherSuffixCheckBox.Bind( wx.EVT_CHECKBOX, self.OnOtherSuffixCheckBox )
 		self.SaveLogCheckBox.Bind( wx.EVT_CHECKBOX, self.OnSaveLogCheckBox )
@@ -458,6 +459,9 @@ class MainFrame ( wx.Frame ):
 		event.Skip()
 	
 	def OnMonteCarloPTypeChoice( self, event ):
+		event.Skip()
+	
+	def OnSimulationWindowChoice( self, event ):
 		event.Skip()
 	
 	def OnClusterCheckBox( self, event ):
