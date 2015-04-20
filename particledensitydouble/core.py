@@ -137,7 +137,8 @@ class Point(geometry.Point):
             self.nearest_neighbour_dist = mindist
             return self.nearest_neighbour_dist
 
-    def get_nearest_lateral_neighbour(self, pointli, profile):
+    # Todo: refactor to remove profile as argument?
+    def get_nearest_lateral_neighbour(self, pointli):
         """Determine distance along profile border to nearest neighbour."""
         # Assumes that only valid (projectable, within shell etc) points
         # are in pointli
@@ -145,7 +146,7 @@ class Point(geometry.Point):
         minp = Point()
         for p in pointli:
             if p is not self:
-                d = self.lateral_dist_to_point(p, profile.path)
+                d = self.lateral_dist_to_point(p, self.profile.path)
                 if d < mindist:
                     mindist = d
                     minp = p
@@ -350,7 +351,7 @@ class ProfileData:
                     dli.append(pointli[i].get_nearest_neighbour(pointli))
                 if self.opt.interpoint_lateral_dist:
                     latdli.append(pointli[i].get_nearest_lateral_neighbour(
-                        pointli, self))
+                        pointli))
         dli = [d for d in dli if d is not None]
         latdli = [d for d in latdli if d is not None]
         return dli, latdli
@@ -373,8 +374,7 @@ class ProfileData:
                 if self.opt.interpoint_shortest_dist:
                     dli.append(p.get_nearest_neighbour(pointli2))
                 if self.opt.interpoint_lateral_dist:
-                    latdli.append(p.get_nearest_lateral_neighbour(pointli2,
-                                                                  self))
+                    latdli.append(p.get_nearest_lateral_neighbour(pointli2))
         dli = [d for d in dli if d is not None]
         latdli = [d for d in latdli if d is not None]
         return dli, latdli
