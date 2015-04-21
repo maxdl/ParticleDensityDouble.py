@@ -3,8 +3,8 @@ import sys
 
 title = "ParticleDensityDouble"
 author = "Max Larsson"
-version = "1.0pre2"
-date = ("November", "11", "2014")
+version = "1.0pre3"
+date = ("April", "21", "2015")
 email = "max.larsson@liu.se"
 homepage = "www.hu.liu.se/forskning/larsson-max/software"
 if hasattr(sys, 'frozen'):
