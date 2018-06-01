@@ -5,8 +5,8 @@
   simulation window other than 'Profile + shell' and provided simulated
   interpoint distances are also calculated. This allows for better comparison
   between interparticle distances and simulated interpoint distances.
-- Processed coordinates, including adjusted PSDs and Monte Carlo simulated
-  points, can now be saved to new output files for each profile.
+- Processed coordinates, including Monte Carlo simulated points and convex hulls
+  of particle clusters can now be saved to new output files for each profile.
 - Removed option to choose which summary files to save.
 - Adjusted the list of possible combinations of point types for which interpoint
   distances can be calculated.
